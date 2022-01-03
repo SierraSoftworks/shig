@@ -35,14 +35,14 @@ var rootCmd = &cobra.Command{
 	Short:   "Sign and verify files using your SSH key",
 	Long:    `Use your existing SSH key(s) to sign and verify files, as a modern, easy to use, alternative to PGP.`,
 	Version: version,
-	Example: `# Signing files
-shig sign file1.txt file2.txt
-shig sign --key ~/.ssh/id_rsa file1.txt file2.txt
+	Example: `  Signing files:
+    shig sign file1.txt file2.txt
+    shig sign --key ~/.ssh/id_rsa file1.txt file2.txt
 
-# Verifying files
-shig verify file1.txt file2.txt --github notheotherben
-shig verify file1.txt file2.txt --thumbprint 'SHA256:MW8+PD+j0wSkK8tY0hlk8868Ebl6jbmkwWPpgvhxEuk'
-shig verify file1.txt file2.txt --publickey ~/.ssh/id_rsa.pub
+  Verifying files:
+    shig verify file1.txt file2.txt --github notheotherben
+    shig verify file1.txt file2.txt --thumbprint 'SHA256:MW8+PD+j0wSkK8tY0hlk8868Ebl6jbmkwWPpgvhxEuk'
+    shig verify file1.txt file2.txt --publickey ~/.ssh/id_rsa.pub
 `,
 }
 
