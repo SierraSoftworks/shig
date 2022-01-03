@@ -22,7 +22,6 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -45,7 +44,7 @@ with and that they are signed by a trusted party.`,
 	Annotations: map[string]string{
 		"Group": "Signing",
 	},
-	RunE: func(cmd *cobra.Command, args []string) error {
+	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
 		hash, _ := cmd.Flags().GetString("hash")
 		sigFile, _ := cmd.Flags().GetString("signature-file")
@@ -54,7 +53,7 @@ with and that they are signed by a trusted party.`,
 		validator, err := getValidator(cmd)
 		if err != nil {
 			cmd.Println("FAIL: Unable to setup your requested validator. Make sure that you have entered the right value.")
-			return err
+			os.Exit(1)
 		}
 
 		if validator == nil {
@@ -118,10 +117,9 @@ with and that they are signed by a trusted party.`,
 		}
 
 		if !passes {
-			return fmt.Errorf("FAIL: One or more files failed verification")
+			cmd.Println("FAIL: One or more files failed verification")
+			os.Exit(1)
 		}
-
-		return nil
 	},
 }
 

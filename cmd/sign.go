@@ -22,7 +22,6 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -45,7 +44,7 @@ key registered with GitHub, people can verify the signature using your GitHub us
 		"Group": "Signing",
 	},
 	Args: cobra.MinimumNArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	Run: func(cmd *cobra.Command, args []string) {
 		key, _ := cmd.Flags().GetString("key")
 		namespace, _ := cmd.Flags().GetString("namespace")
 		hash, _ := cmd.Flags().GetString("hash")
@@ -54,13 +53,13 @@ key registered with GitHub, people can verify the signature using your GitHub us
 		pkc, err := ioutil.ReadFile(os.ExpandEnv(key))
 		if err != nil {
 			cmd.Println("FAIL: Unable to read your SSH private key. Make sure that you have entered its path correctly and have permission to access it.")
-			return err
+			os.Exit(1)
 		}
 
 		pk, err := ssh.ParsePrivateKey(pkc)
 		if err != nil {
 			cmd.Println("FAIL: Unable to parse your SSH private key. Make sure that it is a well-formatted SSH private key file.")
-			return err
+			os.Exit(1)
 		}
 
 		signer := sshsign.DefaultSigner(namespace, hash, pk)
@@ -105,10 +104,9 @@ key registered with GitHub, people can verify the signature using your GitHub us
 		}
 
 		if !passes {
-			return fmt.Errorf("FAIL: One or more files could not be signed")
+			cmd.Println("FAIL: One or more files could not be signed")
+			os.Exit(1)
 		}
-
-		return nil
 	},
 }
 
