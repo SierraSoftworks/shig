@@ -1,0 +1,15 @@
+name: Test
+on:
+  - push
+
+jobs:
+  go:
+    name: Test (Go)
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.17.5'
+      - run: go test -v ./...
+      - run: go vet ./...
