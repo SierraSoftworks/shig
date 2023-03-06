@@ -22,13 +22,10 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"io/ioutil"
 	"os"
-	"strings"
 
-	"github.com/SierraSoftworks/sshsign-go"
+	"github.com/SierraSoftworks/shig/internal/core"
 	"github.com/spf13/cobra"
-	"golang.org/x/crypto/ssh"
 )
 
 // signCmd represents the sign command
@@ -50,57 +47,19 @@ key registered with GitHub, people can verify the signature using your GitHub us
 		hash, _ := cmd.Flags().GetString("hash")
 		sigFile, _ := cmd.Flags().GetString("signature-file")
 
-		pkc, err := ioutil.ReadFile(os.ExpandEnv(key))
+		signer, err := core.NewSigner(cmd, key, namespace, hash, sigFile)
 		if err != nil {
-			cmd.Println("FAIL: Unable to read your SSH private key. Make sure that you have entered its path correctly and have permission to access it.")
+			cmd.PrintErrln(err)
 			os.Exit(1)
 		}
-
-		pk, err := ssh.ParsePrivateKey(pkc)
-		if err != nil {
-			cmd.Println("FAIL: Unable to parse your SSH private key. Make sure that it is a well-formatted SSH private key file.")
-			os.Exit(1)
-		}
-
-		signer := sshsign.DefaultSigner(namespace, hash, pk)
 
 		passes := true
 
 		for _, file := range args {
-			f, err := os.Open(file)
-			if err != nil {
-				cmd.Printf("FAIL: '%s' could not be opened for signing.\n", file)
-				cmd.PrintErrln(err)
+			if err := signer.Sign(file); err != nil {
 				passes = false
-				continue
-			}
-			defer f.Close()
-
-			sig, err := signer.Sign(f)
-			if err != nil {
-				cmd.Printf("FAIL: '%s' could not be signed.\n", file)
 				cmd.PrintErrln(err)
-				passes = false
-				continue
 			}
-
-			armoured, err := sig.MarshalArmoured()
-			if err != nil {
-				cmd.Printf("FAIL: '%s' could not format the signature file correctly.\n", file)
-				cmd.PrintErrln(err)
-				passes = false
-				continue
-			}
-
-			sigFile := strings.ReplaceAll(sigFile, "%f", file)
-			if err := ioutil.WriteFile(sigFile, armoured, 0644); err != nil {
-				cmd.Printf("FAIL: '%s' could not be saved.\n", sigFile)
-				cmd.PrintErrln(err)
-				passes = false
-				continue
-			}
-
-			cmd.Printf("PASS: '%s' has been signed.\n", file)
 		}
 
 		if !passes {

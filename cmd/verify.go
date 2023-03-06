@@ -22,14 +22,12 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"io/ioutil"
 	"os"
 	"strings"
 
+	"github.com/SierraSoftworks/shig/internal/core"
 	"github.com/SierraSoftworks/shig/internal/publickeys"
-	"github.com/SierraSoftworks/sshsign-go"
 	"github.com/spf13/cobra"
-	"golang.org/x/crypto/ssh"
 )
 
 // verifyCmd represents the verify command
@@ -49,7 +47,6 @@ with and that they are signed by a trusted party.`,
 		hash, _ := cmd.Flags().GetString("hash")
 		sigFile, _ := cmd.Flags().GetString("signature-file")
 
-		verifier := sshsign.DefaultVerifier(namespace, hash)
 		validator, err := getValidator(cmd)
 		if err != nil {
 			cmd.Println("FAIL: Unable to setup your requested validator. Make sure that you have entered the right value.")
@@ -60,60 +57,15 @@ with and that they are signed by a trusted party.`,
 			cmd.PrintErrln("WARNING: You have not provided a means of verifying the author of this signature. This makes it impossible to determine whether the file has been maliciously tampered with.")
 		}
 
+		verifier := core.NewVerifier(cmd, namespace, hash, sigFile, validator)
+
 		passes := true
 
 		for _, file := range args {
-			f, err := os.Open(file)
-			if err != nil {
-				cmd.Printf("FAIL: '%s' could not be opened\n", file)
-				cmd.PrintErrln(err)
+			if err := verifier.Verify(file); err != nil {
 				passes = false
-				continue
-			}
-			defer f.Close()
-
-			sigFile := strings.ReplaceAll(sigFile, "%f", file)
-			sf, err := ioutil.ReadFile(sigFile)
-			if err != nil {
-				cmd.Printf("FAIL: '%s' does not have a corresponding signature file '%s'\n", file, sigFile)
 				cmd.PrintErrln(err)
-				passes = false
-				continue
 			}
-
-			sig, _, err := sshsign.UnmarshalArmoured(sf)
-			if err != nil {
-				cmd.Printf("FAIL: '%s' is not a well-formatted signature file.\n", sigFile)
-				cmd.PrintErrln(err)
-				passes = false
-				continue
-			}
-
-			if err := verifier.Verify(f, sig); err != nil {
-				cmd.Printf("FAIL: '%s' does not match the signature file '%s'\n", file, sigFile)
-				cmd.PrintErrln(err)
-				passes = false
-				continue
-			}
-
-			key, err := sig.GetPublicKey()
-			if err != nil {
-				cmd.Printf("FAIL: '%s' does not contain a valid public key in its signature\n", file)
-				cmd.PrintErrln(err)
-				passes = false
-				continue
-			}
-
-			if validator != nil {
-				if err := validator.Validate(key); err != nil {
-					cmd.Printf("FAIL: '%s' is signed by an untrusted key: %s\n", file, ssh.FingerprintSHA256(key))
-					cmd.PrintErrln(err)
-					passes = false
-					continue
-				}
-			}
-
-			cmd.Printf("PASS: '%s' is signed by '%s'\n", file, ssh.FingerprintSHA256(key))
 		}
 
 		if !passes {
