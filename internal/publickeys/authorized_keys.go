@@ -15,7 +15,7 @@ func NewAuthorizedKeysFileValidator(path string) (Validator, error) {
 
 	f, err := os.Open(path)
 	if err != nil {
-		return nil, errors.Wrap(err, "ssign: failed to open authorized_keys file")
+		return nil, errors.Wrap(err, "shig: failed to open authorized_keys file")
 	}
 
 	scanner := bufio.NewScanner(f)

@@ -39,7 +39,7 @@ var signCmd = &cobra.Command{
 which can then be verified by anyone who knows your SSH public key. If you have your
 key registered with GitHub, people can verify the signature using your GitHub username.`,
 	Aliases: []string{"s"},
-	Example: `ssign sign file1.txt file2.txt`,
+	Example: `shig sign file1.txt file2.txt`,
 	Annotations: map[string]string{
 		"Group": "Signing",
 	},

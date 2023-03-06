@@ -31,7 +31,7 @@ var version = "dev"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:     "ssign",
+	Use:     "shig",
 	Short:   "Sign and verify files using your SSH key",
 	Long:    `Use your existing SSH key(s) to sign and verify files, as a modern, easy to use, alternative to PGP.`,
 	Version: version,

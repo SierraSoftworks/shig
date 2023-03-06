@@ -39,7 +39,7 @@ var verifyCmd = &cobra.Command{
 	Long: `This command allows you to verify that a file's contents have not been tampered
 with and that they are signed by a trusted party.`,
 	Aliases: []string{"v", "check"},
-	Example: `ssign verify --github notheotherben file1.txt file2.txt`,
+	Example: `shig verify --github notheotherben file1.txt file2.txt`,
 	Args:    cobra.MinimumNArgs(1),
 	Annotations: map[string]string{
 		"Group": "Signing",

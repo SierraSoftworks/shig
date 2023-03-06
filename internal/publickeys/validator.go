@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	ErrUntrustedNamespace = fmt.Errorf("ssign: the signature is using an untrusted namespace")
-	ErrUntrustedKey       = fmt.Errorf("ssign: the signature is using an untrusted key")
+	ErrUntrustedNamespace = fmt.Errorf("shig: the signature is using an untrusted namespace")
+	ErrUntrustedKey       = fmt.Errorf("shig: the signature is using an untrusted key")
 )
 
 // A Validator is responsible for checking that a given public key

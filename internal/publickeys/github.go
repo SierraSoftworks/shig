@@ -16,7 +16,7 @@ func NewGitHubValidator(username string) (Validator, error) {
 
 	resp, err := http.Get(fmt.Sprintf("https://github.com/%s.keys", username))
 	if err != nil {
-		return nil, errors.Wrap(err, "ssign: failed to fetch GitHub public keys")
+		return nil, errors.Wrap(err, "shig: failed to fetch GitHub public keys")
 	}
 
 	scanner := bufio.NewScanner(resp.Body)
