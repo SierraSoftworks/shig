@@ -18,7 +18,7 @@ jobs:
     
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v4
         with:
           go-version: '^1.17.5'
       - run: go build -o shig-${{matrix.os}}-${{matrix.arch}}${{matrix.extension}} -ldflags "-X 'cmd.version=${{ github.event.release.tag_name }}'" ./main.go
