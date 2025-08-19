@@ -25,7 +25,7 @@ jobs:
         env:
           GOOS: ${{matrix.os}}
           GOARCH: ${{matrix.arch}}
-      - uses: SierraSoftworks/gh-releases@v1.0.7
+      - uses: SierraSoftworks/gh-releases@v1.0.8
         with:
           files: "shig-${{matrix.os}}-${{matrix.arch}}${{matrix.extension}}"
           token: ${{ secrets.GITHUB_TOKEN }}
