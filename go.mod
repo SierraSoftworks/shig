@@ -8,7 +8,7 @@ require (
 	github.com/SierraSoftworks/sshsign-go v0.0.0-20250303233619-ba60a17142c9
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.9.1
-	github.com/stretchr/testify v1.11.0
+	github.com/stretchr/testify v1.11.1
 	golang.org/x/crypto v0.41.0
 )
 
