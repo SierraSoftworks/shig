@@ -15,6 +15,13 @@ do so are far from intuitive. This command line application is designed to provi
 a straightforward, easy-to-use, interface for signing and verifying files using
 SSH keys in a manner that is fully compatible with `ssh-keygen`'s SSHSIG protocol.
 
+## Installation
+Install with [Homebrew](https://brew.sh):
+
+```sh
+brew install sierrasoftworks/tap/shig
+```
+
 ## Features
  - Extremely quick and easy to use
  - Compatible with `ssh-keygen`'s SSHSIG protocol
